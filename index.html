@@ -1,1 +1,129 @@
 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MUSA AI Studio</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#101820;color:#f5f3ed;font-family:Arial,sans-serif}
+.app{display:flex;min-height:100vh}
+.sidebar{width:240px;background:#0c141b;padding:25px 18px;border-right:1px solid #28343d}
+.brand{font-size:21px;font-weight:bold;letter-spacing:3px}
+.brand span{display:block;font-size:10px;color:#b69a62;letter-spacing:4px;margin-top:5px}
+.new{width:100%;margin:35px 0 25px;padding:13px;background:#b69a62;border:0;border-radius:7px;color:#101820;font-weight:bold;cursor:pointer}
+.label{font-size:10px;color:#89949b;letter-spacing:2px;margin:20px 0 12px}
+.nav{padding:12px;color:#cbd0d2;border-radius:6px;font-size:13px}
+.nav.active{background:#26343e;color:white}
+.main{flex:1;min-width:0}
+header{height:65px;border-bottom:1px solid #28343d;display:flex;align-items:center;justify-content:space-between;padding:0 25px;color:#b9c0c3;font-size:12px}
+.status{color:#9cba9f}
+.content{padding:45px 25px;max-width:1100px;margin:auto}
+.intro{text-align:center;margin:45px auto 35px}
+.eyebrow{color:#b69a62;font-size:11px;letter-spacing:3px}
+h1{font-family:Georgia,serif;font-size:clamp(35px,6vw,58px);font-weight:normal;margin:18px 0}
+.intro p{color:#a4afb4;font-size:14px;line-height:1.7}
+.builder{max-width:760px;margin:35px auto;background:#1b2832;border:1px solid #35434c;border-radius:12px;padding:17px}
+textarea{width:100%;height:125px;background:transparent;color:white;border:0;outline:none;resize:vertical;font:15px/1.6 Arial}
+textarea::placeholder{color:#829099}
+.actions{display:flex;justify-content:space-between;align-items:center;border-top:1px solid #35434c;padding-top:13px}
+.actions small{color:#87949b;font-size:11px}
+button{cursor:pointer}
+.build{background:#b69a62;border:0;border-radius:6px;padding:12px 20px;font-weight:bold;color:#101820}
+.examples{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;margin:20px auto}
+.example{border:1px solid #35434c;border-radius:20px;padding:10px 14px;color:#c4c9ca;font-size:11px;background:#17232c;cursor:pointer}
+.workspace{display:none;margin:35px auto;max-width:1000px;border:1px solid #35434c;border-radius:10px;overflow:hidden}
+.workhead{padding:15px;background:#1b2832;display:flex;justify-content:space-between;align-items:center;font-size:12px}
+.workbody{display:grid;grid-template-columns:1fr 1fr;min-height:300px}
+.panel{padding:18px;min-width:0}
+.panel+ .panel{border-left:1px solid #35434c}
+.panel h3{font-size:12px;color:#b69a62}
+#response{font-size:13px;line-height:1.7;color:#cbd0d2;white-space:pre-wrap}
+pre{white-space:pre-wrap;overflow-wrap:anywhere;color:#cbd0d2;font-size:11px}
+footer{text-align:center;color:#77838a;font-size:10px;padding:30px}
+@media(max-width:700px){.sidebar{width:65px;padding:20px 8px}.brand{font-size:12px;letter-spacing:0}.brand span,.label,.nav:not(.active),.new{display:none}.nav.active{font-size:0}header{padding:0 12px}.content{padding:20px 12px}.workbody{grid-template-columns:1fr}.panel+.panel{border-left:0;border-top:1px solid #35434c}}
+</style>
+</head>
+<body>
+<div class="app">
+<aside class="sidebar">
+  <div class="brand">MUSA<span>AI STUDIO</span></div>
+  <button class="new" onclick="newProject()">＋ New Project</button>
+  <div class="label">WORKSPACE</div>
+  <div class="nav active">▦ Projects</div>
+  <div class="nav">◷ Project History</div>
+  <div class="nav">⚙ Settings</div>
+</aside>
+
+<main class="main">
+<header>
+  <span>Workspace / New Project</span>
+  <span class="status">● Studio Ready</span>
+</header>
+
+<div class="content">
+<section class="intro">
+  <div class="eyebrow">YOUR IDEAS. YOUR APPLICATIONS.</div>
+  <h1>What do you want<br>to build today?</h1>
+  <p>Describe your idea in simple language.<br>
+  Turn your instructions into a web application.</p>
+</section>
+
+<div class="builder">
+<textarea id="prompt" placeholder="Build a real estate CRM with buyer discovery, investor database, deal matching and email outreach..."></textarea>
+<div class="actions">
+  <small>Describe your project in detail</small>
+  <button class="build" onclick="buildProject()">✦ Build Project</button>
+</div>
+</div>
+
+<div class="examples">
+<button class="example" onclick="useExample('Build a professional real estate investor CRM')">Real Estate CRM</button>
+<button class="example" onclick="useExample('Build a luxury skincare ecommerce website')">Online Store</button>
+<button class="example" onclick="useExample('Build a professional business website')">Business Website</button>
+</div>
+
+<div class="workspace" id="workspace">
+  <div class="workhead">
+    <span>✦ AI BUILD WORKSPACE</span>
+    <span id="workStatus">Waiting</span>
+  </div>
+  <div class="workbody">
+    <div class="panel">
+      <h3>PROJECT INSTRUCTIONS</h3>
+      <div id="response">Your project instructions will appear here.</div>
+    </div>
+    <div class="panel">
+      <h3>GENERATION STATUS</h3>
+      <pre id="code">Your AI generation engine is not connected yet.</pre>
+    </div>
+  </div>
+</div>
+</div>
+<footer>MUSA AI STUDIO · BUILD YOUR IDEAS</footer>
+</main>
+</div>
+
+<script>
+function useExample(value){
+ document.getElementById('prompt').value=value;
+}
+function newProject(){
+ document.getElementById('prompt').value='';
+ document.getElementById('workspace').style.display='none';
+}
+function buildProject(){
+ const prompt=document.getElementById('prompt').value.trim();
+ if(!prompt){alert('Please describe your project first.');return;}
+ document.getElementById('workspace').style.display='block';
+ document.getElementById('response').textContent=prompt;
+ document.getElementById('workStatus').textContent='AI connection required';
+ document.getElementById('code').textContent=
+ 'Your instructions have been received by the interface.\\n\\nTo generate actual application code, connect a secure AI backend and API key.\\n\\nThis GitHub Pages version currently provides the frontend only.';
+ document.getElementById('workspace').scrollIntoView({behavior:'smooth'});
+}
+</script>
+</body>
+</html>
+
